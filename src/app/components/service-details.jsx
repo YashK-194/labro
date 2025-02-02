@@ -120,7 +120,7 @@ const ServiceDetails = ({ userId, service, onClose }) => {
             <div>
               <h3 className="text-lg font-semibold">{lister?.name}</h3>
               <p className="text-gray-500 text-m ">
-                {lister?.phone && `+91 ${lister.phone}`}
+                {lister?.phone && <p className="text-gray-500 text-sm">+91 {lister.phone}</p>}
               </p>
             </div>
           </div>
@@ -140,7 +140,11 @@ const ServiceDetails = ({ userId, service, onClose }) => {
             ₹{parseFloat(service.price.min).toFixed(2)} - ₹{parseFloat(service.price.max).toFixed(2)}
           </p>
           <p className="text-gray-500 text-sm mb-2">
-            <b>Location: </b>{formatLocation(service.location)}
+            <b>Location:  </b>
+            <a href={`https://www.google.com/maps/search/?api=1&query=${service.location.latitude},${service.location.longitude}`} className="hover:text-gray-700">
+              (View in Google Maps)<br/>
+              {formatLocation(service.location)}
+           </a>
           </p>
           <p className="text-gray-500 text-sm mb-4">
             <b>Listed on: </b>{new Date(service.timestamp).toLocaleDateString('en-GB')}
