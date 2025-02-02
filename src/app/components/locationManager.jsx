@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
-
-
+import { useRouter } from "next/navigation";
 
 const LocationManager = ({ userId, onLocationUpdate }) => {
+  const router = useRouter();
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -17,19 +17,19 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
   const getCurrentLocation = () => {
     setLoading(true);
     setError(null);
-    setShowManualInput(false); // Hide manual input initially
+    setShowManualInput(false);
 
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser");
       setLoading(false);
-      setShowManualInput(true); // Show manual input on failure
+      setShowManualInput(true);
       return;
     }
-
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         try {
+          console.log("Getting current position...");
           const { latitude, longitude } = position.coords;
 
           const response = await fetch(
@@ -37,6 +37,7 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
           );
 
           const data = await response.json();
+          console.log("Location data received:", data);
 
           const locationData = {
             latitude,
@@ -45,21 +46,31 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
             timestamp: new Date().toISOString(),
           };
 
+          console.log("Updating user location...");
           await updateUserLocation(userId, locationData);
+          console.log("Location updated successfully");
 
           setLocation(locationData);
           onLocationUpdate(locationData);
           setLoading(false);
+          setShowPopup(false);
+          
+          // Use Next.js router to refresh
+          console.log("Refreshing page...");
+          router.refresh();
+
         } catch (err) {
+          console.error("Error in getCurrentLocation:", err);
           setError("Failed to fetch location details");
           setLoading(false);
-          setShowManualInput(true); // Show manual input on failure
+          setShowManualInput(true);
         }
       },
       (err) => {
+        console.error("Geolocation error:", err);
         setError(`Error getting location: ${err.message}`);
         setLoading(false);
-        setShowManualInput(true); // Show manual input on failure
+        setShowManualInput(true);
       },
     );
   };
@@ -69,6 +80,7 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
       const userRef = doc(db, "Users", uid);
       await updateDoc(userRef, { location: locationData });
     } catch (err) {
+      console.error("Error updating location in database:", err);
       throw new Error("Failed to update location in database");
     }
   };
@@ -80,12 +92,14 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
     setError(null);
 
     try {
+      console.log("Fetching address data...");
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
           manualAddress
         )}`
       );
       const data = await response.json();
+      console.log("Address data received:", data);
 
       if (data && data[0]) {
         const locationData = {
@@ -95,14 +109,23 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
           timestamp: new Date().toISOString(),
         };
 
+        console.log("Updating user location...");
         await updateUserLocation(userId, locationData);
+        console.log("Location updated successfully");
+
         setLocation(locationData);
         onLocationUpdate(locationData);
         setShowPopup(false);
+        
+        // Use Next.js router to refresh
+        console.log("Refreshing page...");
+        router.refresh();
+        
       } else {
         setError("Address not found");
       }
     } catch (err) {
+      console.error("Error in handleManualAddressUpdate:", err);
       setError("Failed to update location");
     } finally {
       setLoading(false);
@@ -176,7 +199,7 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
           }}
           onClick={() => setShowPopup(true)}
         >
-          No location available. Please update your location.
+          No location available. Click to update your location.
         </div>
       )}
 

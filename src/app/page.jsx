@@ -93,7 +93,7 @@ function Home() {
                 onClick={() => router.push("/sign-in")}
                 className="inline-flex items-center px-8 py-3 border border-teal-600 text-base font-medium rounded-lg text-teal-600 bg-white hover:bg-teal-50 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
               >
-                Sign In
+                Log In
               </button>
             )}
           </div>

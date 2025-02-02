@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import withAuth from "../firebase/withAuth";
 import { doc, getDoc } from "firebase/firestore";
@@ -11,6 +10,14 @@ import LocationManager from "../components/locationManager";
 import FeaturedServices from "../components/featured-services"; // Updated to fetch services properly
 import calculateDistance from "../components/calculate-distance";
 import ServiceDetails from "../components/service-details";
+
+
+import CarpenterIcon from "../../icons/quick_search/Carpenter.png";
+import MistryIcon from "../../icons/quick_search/Mistry.png";
+import PlumberIcon from "../../icons/quick_search/Plumber.png";
+import ElectricianIcon from "../../icons/quick_search/Electrician.png";
+import LaborIcon from "../../icons/quick_search/Labor.png";
+import PainterIcon from "../../icons/quick_search/Painter.png";
 
 
 
@@ -72,6 +79,13 @@ const Find = () => {
   const handleCloseDetails = () => setSelectedService(null);
 
 
+  const handleLocationUpdate = (locationData) => {
+    // Do anything you need with the locationData
+    console.log("Location updated:", locationData);
+    // Refresh the page
+    window.location.reload();
+  };
+
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -95,7 +109,10 @@ const Find = () => {
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6">
       {user ? (
-        <LocationManager userId={user.uid} />
+        <LocationManager 
+          userId={user.uid} 
+          onLocationUpdate={handleLocationUpdate}
+        />
       ) : (
         <div className="text-center text-gray-600">Please log in to access location features</div>
       )}
@@ -113,20 +130,30 @@ const Find = () => {
 
       {/* Quick Search Section */}
 
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold mb-4">Quick Search</h2>
-        <div className="grid grid-cols-3 gap-4">
-          {["Plumber", "Carpenter", "Painter", "Labor", "Mistry", "Electrician"].map((service) => (
-            <div
-              key={service}
-              onClick={() => handleQuickSearch(service)}
-              className="p-4 text-center border border-gray-300 rounded-lg shadow cursor-pointer"
-            >
-              <span className="text-teal-600 font-medium">{service}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+    {/* Quick Search Section */}
+    <section className="mb-8">
+      <h2 className="text-lg font-semibold mb-4">Quick Search</h2>
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { name: "Labor", icon: LaborIcon },
+          { name: "Mistry", icon: MistryIcon },
+          { name: "Plumber", icon: PlumberIcon },
+          { name: "Carpenter", icon: CarpenterIcon },
+          { name: "Painter", icon: PainterIcon },
+          { name: "Electrician", icon: ElectricianIcon },
+        ].map(({ name, icon }) => (
+          <div
+            key={name}
+            onClick={() => handleQuickSearch(name)}
+            className="p-4 text-center border border-gray-300 rounded-lg shadow cursor-pointer hover:bg-gray-100 transition"
+          >
+            <img src={icon.src} alt={name} className="w-12 h-12 mx-auto mb-2" />
+            <span className="text-teal-600 font-medium">{name}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
 
     {/* Featured Services Section */}
     <section className="mb-8">

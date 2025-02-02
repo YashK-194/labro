@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .gitignore
+temp.jsx
 
 # debug
 npm-debug.log*
