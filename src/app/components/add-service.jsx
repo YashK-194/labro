@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { doc, setDoc, arrayUnion, updateDoc,getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
 const serviceOptions = ["Plumber", "Electrician", "Carpenter", "Painter", "Labor", "Mistry"];
@@ -46,6 +46,7 @@ const AddService = ({ userId, onClose, onAdd }) => {
     setError(null);
 
     try {
+      // Get user's location from "Users" collection
       const userRef = doc(db, "Users", userId);
       const userDoc = await getDoc(userRef);
 
@@ -55,10 +56,14 @@ const AddService = ({ userId, onClose, onAdd }) => {
 
       const userData = userDoc.data();
       const userLocation = userData.location || "Unknown";
-      const existingServices = userData.services || [];
 
-      const service = {
-        id: crypto.randomUUID(),
+      // Generate unique service ID
+      const serviceId = crypto.randomUUID();
+      const serviceRef = doc(db, "Services", serviceId);
+
+      const serviceData = {
+        // serviceId: serviceId,
+        userId,
         title: formData.title.toLowerCase(),
         description: formData.description,
         price: {
@@ -66,26 +71,15 @@ const AddService = ({ userId, onClose, onAdd }) => {
           max: parseFloat(formData.maxPrice).toFixed(2),
         },
         timestamp: new Date().toISOString(),
-        location: userLocation,
+        location: userLocation, // Add location field
       };
 
-      const isDuplicate = existingServices.some(
-        (s) =>
-          s.title.toLowerCase() === service.title &&
-          s.description === service.description
-      );
-
-      if (isDuplicate) {
-        setError("A similar service already exists");
-        setLoading(false);
-        return;
-      }
-
+      await setDoc(serviceRef, serviceData);
       await updateDoc(userRef, {
-        services: arrayUnion(service),
+        services: arrayUnion(serviceId),
       });
 
-      onAdd(service);
+      onAdd(serviceData);
       onClose();
     } catch (err) {
       console.error("Failed to add service:", err);
@@ -188,3 +182,6 @@ const AddService = ({ userId, onClose, onAdd }) => {
 };
 
 export default AddService;
+
+
+

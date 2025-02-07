@@ -1,5 +1,4 @@
-// import React, {Suspense } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
 const searchServices = async (searchTerm, onServiceSelect) => {
@@ -7,35 +6,50 @@ const searchServices = async (searchTerm, onServiceSelect) => {
     if (!searchTerm.trim()) return []; // Prevent empty searches
 
     const search = searchTerm.toLowerCase();
-    const usersCollection = collection(db, "Users");
-    const snapshot = await getDocs(usersCollection);
+    const servicesCollection = collection(db, "Services");
+    const snapshot = await getDocs(servicesCollection);
     const results = [];
 
     if (!snapshot.empty) {
-      snapshot.forEach((doc) => {
-        const userData = doc.data();
-        const userId = doc.id;
+      for (const serviceDoc of snapshot.docs) {
+        const service = serviceDoc.data();
+        const userId = service.userId;
 
-        if (userData.services) {
-          userData.services.forEach((service) => {
-            if (service.title.toLowerCase().includes(search)) {
-              const serviceData = {
-                ...service,
-                userId,
-                providerName: userData.name || "Unknown",
-                providerPhone: userData.phone || "N/A",
-                providerEmail: userData.email || "N/A",
+        if (service.title.toLowerCase().includes(search)) {
+          let providerDetails = { name: "Unknown", phone: "N/A", email: "N/A", location: null };
+          
+          if (userId) {
+            const userRef = doc(db, "Users", userId);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+              const userData = userSnap.data();
+              providerDetails = {
+                name: userData.name || "Unknown",
+                phone: userData.phone || "N/A",
+                email: userData.email || "N/A",
+                location: userData.location || null,
               };
-              serviceData.onClick = () => {
-                if (onServiceSelect) {
-                  onServiceSelect(serviceData);
-                }
-              };
-              results.push(serviceData);
             }
-          });
+          }
+
+          const serviceData = {
+            ...service,
+            userId,
+            providerName: providerDetails.name,
+            providerPhone: providerDetails.phone,
+            providerEmail: providerDetails.email,
+            providerLocation: providerDetails.location,
+          };
+
+          serviceData.onClick = () => {
+            if (onServiceSelect) {
+              onServiceSelect(serviceData);
+            }
+          };
+
+          results.push(serviceData);
         }
-      });
+      }
     }
 
     // Sort results by timestamp (most recent first)

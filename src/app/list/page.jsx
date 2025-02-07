@@ -1,11 +1,10 @@
-
 'use client';
 import React, { useState, useEffect } from "react";
 import withAuth from "../firebase/withAuth";
 import AddService from "../components/add-service";
 import ServiceDetails from "../components/service-details";
 import { auth, db } from "../firebase/config";
-import { doc, getDoc,updateDoc,onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDocs, getDoc,updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 
 const List = () => {
   const [services, setServices] = useState([]);
@@ -20,7 +19,7 @@ const List = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUserDetails(user);
-        subscribeToServices(user.uid);
+        subscribeToUserServices(user.uid);
       } else {
         setServices([]);
         setLoading(false);
@@ -30,50 +29,60 @@ const List = () => {
     return () => unsubscribe();
   }, []);
 
-  const subscribeToServices = (userId) => {
-    const userRef = doc(db, "Users", userId);
-    
-    return onSnapshot(userRef, 
-      (doc) => {
-        if (doc.exists()) {
-          const userData = doc.data();
-          const servicesData = userData.services || [];
-          setServices(servicesData);
-        } else {
-          setServices([]);
-        }
-        setLoading(false);
-      },
-      (err) => {
-        console.error("Error fetching services:", err);
-        setError("Failed to load services");
-        setLoading(false);
-      }
-    );
+  const subscribeToUserServices = (userId) => {
+    const servicesRef = collection(db, "Services");
+    const q = query(servicesRef, where("userId", "==", userId));
+
+    return onSnapshot(q, (querySnapshot) => {
+      const userServices = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setServices(userServices);
+      setLoading(false);
+    }, (err) => {
+      console.error("Error fetching services:", err);
+      setError("Failed to load services");
+      setLoading(false);
+    });
   };
 
   const handleAddServiceClick = () => setShowPopup(true);
   const handleClosePopup = () => setShowPopup(false);
   const handleServiceClick = (service) => setSelectedService(service);
   const handleCloseDetails = () => setSelectedService(null);
-  const toggleMenu = (id) => setMenuOpen(menuOpen === id ? null : id);  
+  const toggleMenu = (id) => setMenuOpen(menuOpen === id ? null : id);
 
   const handleDeleteService = async (serviceId) => {
-    if (!userDetails) return;
     try {
-      const userRef = doc(db, "Users", userDetails.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        const updatedServices = userData.services.filter(service => service.id !== serviceId);
-        await updateDoc(userRef, { services: updatedServices });
-        setServices(updatedServices);
+      // Fetch the service document to get the userId
+      const serviceRef = doc(db, "Services", serviceId);
+      const serviceSnap = await getDoc(serviceRef);
+  
+      if (serviceSnap.exists()) {
+        const serviceData = serviceSnap.data();
+        const userId = serviceData.userId;
+  
+        // Delete the service document
+        await deleteDoc(serviceRef);
+  
+        // Update the user's services array
+        if (userId) {
+          const userRef = doc(db, "Users", userId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            const updatedServices = userData.services?.filter(id => id !== serviceId) || [];
+  
+            await updateDoc(userRef, { services: updatedServices });
+          }
+        }
+  
+        // Update local state
+        setServices((prev) => prev.filter(service => service.id !== serviceId));
       }
     } catch (error) {
       console.error("Error deleting service:", error);
     }
   };
-
+  
 
   if (loading) {
     return (
@@ -94,13 +103,12 @@ const List = () => {
   return (
     <div className="p-4 min-h-screen flex flex-col">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Your Listed Services</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Your Listed Services<br/>(आपकी दर्ज सेवाएँ)</h1> 
         <button
           onClick={handleAddServiceClick}
-          className="flex items-center px-3 py-2 bg-teal-600 text-white rounded-md 
-            hover:bg-teal-700 transition-colors"
+          className="flex items-center px-3 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors"
         >
-          <span className="mr-2">+</span> Add Service
+          <span className="mr-2">+</span> Add Service<br/>(सेवा दर्ज करें)
         </button>
       </div>
 
@@ -136,19 +144,16 @@ const List = () => {
       ) : (
         <div className="flex flex-grow justify-center items-center">
           <p className="text-gray-500 text-center text-lg">
-            No services listed yet. Add a service to get started!
+            No services listed yet. Add a service to get started!<br/>(अभी तक कोई सेवा जोड़ी नहीं गई है। शुरुआत करने के लिए सेवा दर्ज करें!)
           </p>
         </div>
       )}
-
 
       {showPopup && userDetails && (
         <AddService
           userId={userDetails.uid}
           onClose={handleClosePopup}
-          onAdd={(newService) => {
-            handleClosePopup();
-          }}
+          onAdd={() => handleClosePopup()}
         />
       )}
 

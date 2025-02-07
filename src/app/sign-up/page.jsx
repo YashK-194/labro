@@ -43,12 +43,17 @@ const SignUpPage = () => {
           });
         }
 
-        setEmail('');
-        setPassword('');
+      setEmail('');
+      setPassword('');
+      console.log("User signed up and data stored successfully!");
       router.push('/sign-in');
 
-
     } catch (error) {
+         // If Firestore fails, delete the user from Auth
+        if (auth.currentUser) {
+            await deleteUser(auth.currentUser);
+            console.log("User deleted due to Firestore failure.");
+        }
         console.error(error);
     }
     console.log('Signup submitted', { email, password });
@@ -69,7 +74,7 @@ const SignUpPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
-              Email Address
+              Email Address (ईमेल एड्रेस)
             </label>
             <input
               type="email"
@@ -83,7 +88,7 @@ const SignUpPage = () => {
           </div>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-black mb-2">
-              Full Name
+              Full Name (पूरा नाम)
             </label>
             <input
               type="text"
@@ -97,7 +102,7 @@ const SignUpPage = () => {
           </div>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-black mb-2">
-              Phone Number
+              Phone Number (फ़ोन नंबर)
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
@@ -116,7 +121,7 @@ const SignUpPage = () => {
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
-              Password
+              Password (पासवर्ड)
             </label>
             <input
               type="password"

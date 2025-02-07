@@ -73,7 +73,7 @@ const SignInPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
-              Email Address
+              Email Address (ईमेल एड्रेस)
             </label>
             <input
               type="email"
@@ -87,7 +87,7 @@ const SignInPage = () => {
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
-              Password
+              Password (पासवर्ड)
             </label>
             <input
               type="password"

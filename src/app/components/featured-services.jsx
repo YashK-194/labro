@@ -1,32 +1,42 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
-
 const FeaturedServices = async () => {
-    
   try {
-    const usersCollection = collection(db, "Users");
-    const snapshot = await getDocs(usersCollection);
+    const servicesCollection = collection(db, "Services");
+    const servicesSnapshot = await getDocs(servicesCollection);
     const results = [];
 
-    if (!snapshot.empty) {
-      for (const doc of snapshot.docs) {
-        const userData = doc.data();
-        const userId = doc.id;
+    if (!servicesSnapshot.empty) {
+      for (const serviceDoc of servicesSnapshot.docs) {
+        const serviceData = serviceDoc.data();
+        const userId = serviceData.userId;
 
-        if (userData.services) {
-          userData.services.forEach((service) => {
-            results.push({
-              ...service,
-              userId,
-              providerName: userData.name || "Unknown",
-              providerPhone: userData.phone || "N/A",
-              providerEmail: userData.email || "N/A",
-              location: userData.location || null, // Include location if available
-              price: service.price || { min: "0", max: "0" }, // Ensure price is structured
-            });
-          });
+        // Fetch user details using userId
+        const userRef = doc(db, "Users", userId);
+        const userSnap = await getDoc(userRef);
+        let providerDetails = {
+          providerName: "Unknown",
+          providerPhone: "N/A",
+          providerEmail: "N/A",
+          location: null,
+        };
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          providerDetails = {
+            providerName: userData.name || "Unknown",
+            providerPhone: userData.phone || "N/A",
+            providerEmail: userData.email || "N/A",
+            location: userData.location || null,
+          };
         }
+
+        results.push({
+          ...serviceData,
+          ...providerDetails,
+          price: serviceData.price || { min: "0", max: "0" },
+        });
 
         if (results.length >= 6) break; // Stop once 6 services are fetched
       }

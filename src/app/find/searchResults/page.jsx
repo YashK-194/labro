@@ -74,15 +74,16 @@ const SearchResults = () => {
         {loading ? (
           <p>Loading...</p>
         ) : results.length === 0 ? (
-          <p className="text-gray-500">No services found.</p>
+          <p className="text-gray-500">No services found.<br/>(कोई सेवा उपलब्ध नहीं है।)</p>
         ) : (
           <div className="grid grid-cols-1 gap-4">
           {results.map((service) => {
+            const uniqueKey = `${service.title}-${service.providerName}-${service.price.min}-${service.price.max}`;
             const distance = userLocation && service.location 
               ? calculateDistance(userLocation, service.location) 
               : null;
             return (
-              <div key={service.id} className="relative p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm" onClick={(e) => {
+              <div key={uniqueKey} className="relative p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm" onClick={(e) => {
                 e.stopPropagation();
                 handleServiceClick(service);
               }}>

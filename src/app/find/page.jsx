@@ -121,7 +121,7 @@ const Find = () => {
       <form onSubmit={handleSearch} className="mb-6">
         <input
           type="text"
-          placeholder="Search for services..."
+          placeholder="Search for services... (सेवाओं खोजें...)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500"
@@ -132,7 +132,7 @@ const Find = () => {
 
     {/* Quick Search Section */}
     <section className="mb-8">
-      <h2 className="text-lg font-semibold mb-4">Quick Search</h2>
+      <h2 className="text-lg font-semibold mb-4">Quick Search (अभी ढूंढें)</h2>
       <div className="grid grid-cols-3 gap-4">
         {[
           { name: "Labor", icon: LaborIcon },
@@ -157,17 +157,19 @@ const Find = () => {
 
     {/* Featured Services Section */}
     <section className="mb-8">
-      <h2 className="text-lg font-semibold mb-4">Featured Services</h2>
+      <h2 className="text-lg font-semibold mb-4">Featured Services (प्रमुख सेवाएँ)</h2>
       {featuredServices.length === 0 ? (
-        <p className="text-gray-500 text-center text-lg">No services found.</p>
+        <p className="text-gray-500 text-center text-lg">No services found.<br/>(कोई सेवा उपलब्ध नहीं है।)</p>
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {featuredServices.map((service) => {
+            const uniqueKey = `${service.title}-${service.providerName}-${service.price.min}-${service.price.max}`;
             const distance = userLocation && service.location 
               ? calculateDistance(userLocation, service.location) 
               : null;
+
             return (
-              <div key={service.id} className="relative p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm" onClick={(e) => {
+              <div key={uniqueKey} className="relative p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm" onClick={(e) => {
                 e.stopPropagation();
                 handleServiceClick(service);
               }}>

@@ -34,6 +34,10 @@ function Home() {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
       setLoading(false);
+      // Redirect to list page if user is authenticated
+      if (user) {
+        router.push("/find");
+      }
     });
 
     return () => unsubscribe();
@@ -43,6 +47,7 @@ function Home() {
     fetchUserDetails();
   }, []);
 
+  // Show loading state while checking authentication
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-teal-50 to-white">
@@ -51,7 +56,13 @@ function Home() {
     );
   }
 
+  // Only render the home page content if user is not authenticated
+  if (user) {
+    return null; // This will briefly show before the redirect happens
+  }
+
   return (
+    // Rest of your existing JSX remains exactly the same
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white">
       {/* Navigation Bar */}
       <nav className="bg-white shadow-md">
@@ -86,16 +97,17 @@ function Home() {
               onClick={handleRedirectToList}
               className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
             >
-              Get Started
+              Get Started<br/>(अकाउंट बनाएं)
             </button>
             {!user && (
               <button
                 onClick={() => router.push("/sign-in")}
                 className="inline-flex items-center px-8 py-3 border border-teal-600 text-base font-medium rounded-lg text-teal-600 bg-white hover:bg-teal-50 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
               >
-                Log In
+                Log In<br/>(लॉग इन करें)
               </button>
             )}
+            
           </div>
         </div>
 

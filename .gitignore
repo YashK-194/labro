@@ -25,6 +25,7 @@
 *.pem
 .gitignore
 temp.jsx
+db_structure.js
 
 # debug
 npm-debug.log*

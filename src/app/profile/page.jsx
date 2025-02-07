@@ -1,33 +1,72 @@
 'use client';
-import React, {useState, useEffect} from "react";
-import {signOut} from 'firebase/auth';
+import React, { useState, useEffect } from "react";
+import { signOut, deleteUser } from 'firebase/auth';
 import { auth, db } from "../firebase/config";
-import withAuth from "../firebase/withAuth"
-import { doc, getDoc } from "firebase/firestore";
+import withAuth from "../firebase/withAuth";
+import { doc, getDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import Image from 'next/image';
 import PfpPlaceholder from '../../icons/Pfp_placeholder.png';
 import labroLogo from "../../icons/Labro_logo.png";
 
-
 const Profile = () => {
   const [userDetails, setUserDetails] = useState(null);
 
-    const fetchUserDetails = async () => {
-      auth.onAuthStateChanged(async (user) => {
-        console.log(user);
+  const fetchUserDetails = async () => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
         const docRef = doc(db, "Users", user.uid);
         const docSnap = await getDoc(docRef);
-        if(docSnap.exists()){
+        if (docSnap.exists()) {
           setUserDetails(docSnap.data());
-          console.log(docSnap.data())
         } else {
-          console.log("User is not logged in")
+          console.log("User not found in Firestore.");
         }
-      });
-    }
+      }
+    });
+  };
+
   useEffect(() => {
     fetchUserDetails();
   }, []);
+
+  const handleDeleteProfile = async () => {
+    if (!auth.currentUser) return;
+
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, "Users", userId);
+    const servicesCollectionRef = collection(db, "Services");
+
+    try {
+      // Delete user's services
+      const q = query(servicesCollectionRef, where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (serviceDoc) => {
+        await deleteDoc(doc(db, "Services", serviceDoc.id));
+      });
+
+      // Confirm deletion
+      if (!window.confirm("Are you sure you want to delete your account?")) {
+        return;
+      }
+
+      // Delete user document from Firestore
+      await deleteDoc(userDocRef);
+
+      // Delete user from Firebase Authentication
+      await deleteUser(auth.currentUser);
+
+      // Sign out the user and clear session
+      await signOut(auth);
+      sessionStorage.removeItem('user');
+
+      alert("Your account has been deleted successfully.");
+      window.location.href = "/"; // Redirect after deletion
+    } catch (error) {
+      console.error("Error deleting profile:", error);
+      alert("Failed to delete profile. Please try again.");
+    }
+  };
+
   return (
     <div className="p-4 min-h-screen flex flex-col items-center justify-center">
       <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -43,6 +82,7 @@ const Profile = () => {
           <div>{userDetails?.phone}</div>
         </div>
       </div>
+      
       {/* Options */}
       <div className="w-full max-w-md">
         <button className="w-full text-left px-4 py-2 border rounded-md mb-2 hover:bg-gray-100">
@@ -58,6 +98,11 @@ const Profile = () => {
           }} 
           className="w-full text-left px-4 py-2 border rounded-md text-red-500 hover:bg-red-100">
           Logout
+        </button>
+        <button 
+          onClick={handleDeleteProfile} 
+          className="w-full text-left px-4 py-2 border rounded-md text-white bg-red-600 hover:bg-red-700">
+          Delete Profile
         </button>
       </div>
 

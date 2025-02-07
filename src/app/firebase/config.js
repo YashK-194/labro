@@ -20,5 +20,6 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 // const analytics = getAnalytics(app);
 
 const auth = getAuth(app);
+auth.useDeviceLanguage();
 const db = getFirestore(app);
 export { app, auth, db };

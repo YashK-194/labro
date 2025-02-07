@@ -199,7 +199,7 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
           }}
           onClick={() => setShowPopup(true)}
         >
-          No location available. Click to update your location.
+          No location available. Click to update your location.<br/>(कोई लोकेशन उपलब्ध नहीं है। अपडेट करने के लिए क्लिक करें।)
         </div>
       )}
 
