@@ -23,7 +23,6 @@
 # misc
 .DS_Store
 *.pem
-.gitignore
 temp.jsx
 db_structure.js
 
