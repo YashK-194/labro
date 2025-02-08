@@ -27,6 +27,10 @@ export default function RootLayout({ children }) {
       >
         {/* Pass control to the client-side layout */}
         <ClientLayout>{children}</ClientLayout>
+
+        {/* Vercel Analytics & Speed Insights */}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
