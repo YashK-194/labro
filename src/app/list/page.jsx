@@ -4,7 +4,7 @@ import withAuth from "../firebase/withAuth";
 import AddService from "../components/add-service";
 import ServiceDetails from "../components/service-details";
 import { auth, db } from "../firebase/config";
-import { collection, query, where, getDocs, getDoc,updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDoc,updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 
 const List = () => {
   const [services, setServices] = useState([]);

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import searchServices from "../../components/search-services";
 import ServiceDetails from "../../components/service-details";
 import { auth, db } from "../../firebase/config";
@@ -20,8 +20,15 @@ const SearchResults = () => {
   const [selectedService, setSelectedService] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
 
+  const router = useRouter();
+  
+
   const handleServiceClick = (service) => setSelectedService(service);
   const handleCloseDetails = () => setSelectedService(null);
+
+  const handleBackClick = () => {
+    router.push("/find");
+  };
 
   // Fetch user location from Firestore
   useEffect(() => {
@@ -67,14 +74,18 @@ const SearchResults = () => {
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-6">
         <h1 className="text-2xl font-semibold mb-4">Search Results for "{searchTerm}"</h1>
-        <Link href="/find" className="text-teal-600 mt-4 inline-block">
-          ← Back to Search
-        </Link>
-    
+        <button 
+          onClick={handleBackClick} 
+          className="px-4 py-2 bg-teal-500 text-white text-sm rounded-lg shadow hover:bg-teal-600 transition"
+        >
+        <b>⇐</b> Back
+        </button>
         {loading ? (
           <p>Loading...</p>
         ) : results.length === 0 ? (
-          <p className="text-gray-500">No services found.<br/>(कोई सेवा उपलब्ध नहीं है।)</p>
+          <div className="flex items-center justify-center h-screen">
+            <p className="text-center text-xl text-gray-500">No services found.<br/>(कोई सेवा उपलब्ध नहीं है।)</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
           {results.map((service) => {

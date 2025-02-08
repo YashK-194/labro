@@ -119,9 +119,13 @@ const ServiceDetails = ({ userId, service, onClose }) => {
             />,
             <div>
               <h3 className="text-lg font-semibold">{lister?.name}</h3>
-              <p className="text-gray-500 text-m ">
-                {lister?.phone && <p className="text-gray-500 text-sm">+91 {lister.phone}</p>}
-              </p>
+              {lister?.phone && (
+                <p className="text-teal-600 text-md font-bold mt-1">
+                  <a href={`tel:+91${lister.phone}`} className="hover:underline">
+                    +91 {lister.phone}
+                  </a>
+                </p>
+              )}
             </div>
           </div>
           {/* Display distance with better visibility */}

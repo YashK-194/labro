@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { doc, setDoc, arrayUnion, updateDoc,getDoc } from "firebase/firestore";
 import { db } from "../firebase/config";
 
-const serviceOptions = ["Plumber", "Electrician", "Carpenter", "Painter", "Labor", "Mistry"];
+const serviceOptions = ["Labor (मजदूर)", "Mistry (मिस्त्री)", "Plumber (प्लंबर)", "Electrician (इलेक्ट्रिशियन)", "Carpenter (बढ़ई)", "Painter (पेंटर)","Maid (मेड/बाई)", "Halwai (हलवाई)", "Shifting (शिफ्टिंग)"];
 
 const AddService = ({ userId, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
@@ -105,7 +105,7 @@ const AddService = ({ userId, onClose, onAdd }) => {
               onChange={handleDropdownChange}
               className="w-full p-2 border rounded-md"
             >
-              <option value="">Select a Service</option>
+              <option value="">Select a Service (सेवा का नाम चुनें)</option>
               {serviceOptions.map((option) => (
                 <option key={option} value={option}>
                   {option}
@@ -116,7 +116,7 @@ const AddService = ({ userId, onClose, onAdd }) => {
             <input
               type="text"
               name="title"
-              placeholder="Or type your own service title"
+              placeholder="Or type your service title (या खुद सेवा का नाम लिखें)"
               value={formData.title}
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
@@ -124,7 +124,7 @@ const AddService = ({ userId, onClose, onAdd }) => {
 
             <textarea
               name="description"
-              placeholder="Description"
+              placeholder="Description (सेवा के बारे में लिखें)"
               value={formData.description}
               onChange={handleChange}
               rows="4"
@@ -134,7 +134,7 @@ const AddService = ({ userId, onClose, onAdd }) => {
             <input
               type="number"
               name="minPrice"
-              placeholder="Minimum Price"
+              placeholder="Minimum Price (न्यूनतम मूल्य)"
               value={formData.minPrice}
               onChange={handleChange}
               step="0.01"
@@ -145,7 +145,7 @@ const AddService = ({ userId, onClose, onAdd }) => {
             <input
               type="number"
               name="maxPrice"
-              placeholder="Maximum Price"
+              placeholder="Maximum Price (अधिकतम मूल्य)"
               value={formData.maxPrice}
               onChange={handleChange}
               step="0.01"

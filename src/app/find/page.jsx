@@ -121,7 +121,7 @@ const Find = () => {
       <form onSubmit={handleSearch} className="mb-6">
         <input
           type="text"
-          placeholder="Search for services... (सेवाओं खोजें...)"
+          placeholder="Search for services... (सेवाएँ खोजें...)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-500"
@@ -132,7 +132,15 @@ const Find = () => {
 
     {/* Quick Search Section */}
     <section className="mb-8">
-      <h2 className="text-lg font-semibold mb-4">Quick Search (अभी ढूंढें)</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">Quick Search (अभी ढूंढें)</h2>
+        <button
+          className="text-teal-500 hover:underline"
+          onClick={() => router.push('/find/allServices')}
+        >
+          See all &gt;
+        </button>
+      </div>
       <div className="grid grid-cols-3 gap-4">
         {[
           { name: "Labor", icon: LaborIcon },

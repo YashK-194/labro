@@ -6,13 +6,21 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import labroLogo from "../../icons/Labro_logo.png";
 import Image from 'next/image';
+import ShowPass from '../../icons/Show_pass.png'
+import HidePass from '../../icons/Hide_pass.png'
 
 const SignInPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
   const [signInWithEmailAndPassword, user, loading, userError] = useSignInWithEmailAndPassword(auth);
   const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -86,11 +94,12 @@ const SignInPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
-              Password (पासवर्ड)
-            </label>
+          <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
+            Password (पासवर्ड)
+          </label>
+          <div className="flex items-center gap-2">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -98,6 +107,10 @@ const SignInPage = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
               placeholder="Enter your password"
             />
+            <button type="button" onClick={togglePasswordVisibility}>
+              {showPassword ? <Image src={HidePass} alt="Hide" width={20} height={20} style={{ width: 'auto', height: 'auto' }} /> : <Image src={ShowPass} alt="Show" width={20} height={20} style={{ width: 'auto', height: 'auto' }} />}
+            </button>
+          </div>
           </div>
           <button
             type="submit"
@@ -106,6 +119,11 @@ const SignInPage = () => {
             Log In
           </button>
         </form>
+        <div className="text-center mt-2 text-sm text-black">
+          <Link href="/sign-in/forgotPassword" className="text-teal-600 hover:underline">
+            Forgot Password?
+          </Link>
+        </div>
         <div className="text-center mt-4 text-sm text-black">
           Don't have an account? <Link href="/sign-up" className="text-teal-600 hover:underline">Sign up</Link>
         </div>

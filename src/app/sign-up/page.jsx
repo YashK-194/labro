@@ -6,6 +6,8 @@ import { setDoc, doc } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
 import labroLogo from "../../icons/Labro_logo.png";
 import Image from 'next/image';
+import ShowPass from '../../icons/Show_pass.png'
+import HidePass from '../../icons/Hide_pass.png'
 
 
 const SignUpPage = () => {
@@ -14,9 +16,14 @@ const SignUpPage = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const[createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);  
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -123,16 +130,21 @@ const SignUpPage = () => {
             <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
               Password (पासवर्ड)
             </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
-              placeholder="Enter at least 8 characters"
-            />
+            <div className="flex items-center gap-2">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
+                placeholder="Enter at least 8 characters"
+              />
+              <button type="button" onClick={togglePasswordVisibility}>
+                {showPassword ? <Image src={HidePass} alt="Hide" width={20} height={20} style={{ width: 'auto', height: 'auto' }} /> : <Image src={ShowPass} alt="Show" width={20} height={20} style={{ width: 'auto', height: 'auto' }} />}
+              </button>
+            </div>
           </div>
           <button
             type="submit"
