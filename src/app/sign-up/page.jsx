@@ -121,6 +121,7 @@ const SignUpPage = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
+                maxLength={10}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-600 pl-12" 
                 placeholder="1234567890"
               />

@@ -4,7 +4,7 @@ import withAuth from "../firebase/withAuth";
 import AddService from "../components/add-service";
 import ServiceDetails from "../components/service-details";
 import { auth, db } from "../firebase/config";
-import { collection, query, where, getDoc,updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDoc, updateDoc, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 
 const List = () => {
   const [services, setServices] = useState([]);
@@ -14,6 +14,7 @@ const List = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [menuOpen, setMenuOpen] = useState(null);
+  const [showLocationWarning, setShowLocationWarning] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -44,7 +45,23 @@ const List = () => {
     });
   };
 
-  const handleAddServiceClick = () => setShowPopup(true);
+  const handleAddServiceClick = async () => {
+    if (!userDetails) return;
+    try {
+      const userRef = doc(db, "Users", userDetails.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists() && userSnap.data().location) {
+        setShowPopup(true);
+      } else {
+        setShowLocationWarning(true);
+      }
+    } catch (err) {
+      console.error("Error checking location:", err);
+      setShowLocationWarning(true);
+    }
+  };
+
   const handleClosePopup = () => setShowPopup(false);
   const handleServiceClick = (service) => setSelectedService(service);
   const handleCloseDetails = () => setSelectedService(null);
@@ -111,6 +128,20 @@ const List = () => {
           <span className="mr-2">+</span> Add Service<br/>(सेवा दर्ज करें)
         </button>
       </div>
+
+      {showLocationWarning && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white p-4 rounded shadow-md text-center">
+            <p className="mb-4">Please update your location before adding a service. <br/>कृपया सेवा दर्ज करने से पहले अपनी लोकेशन अपडेट करें।</p>
+            <button
+              onClick={() => setShowLocationWarning(false)}
+              className="bg-teal-600 text-white px-3 py-2 rounded"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
 
       {services.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

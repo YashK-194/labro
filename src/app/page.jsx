@@ -95,19 +95,21 @@ function Home() {
           <div className="mt-10 flex justify-center gap-4">
             <button
               onClick={handleRedirectToList}
-              className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+              className="inline-flex flex-col items-center px-5 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-teal-600 hover:bg-teal-700 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
             >
-              Get Started<br/>(अकाउंट बनाएं)
+              <span><strong>Create Account</strong></span>
+              <span className="mt-1">(अकाउंट बनाएं)</span>
             </button>
+
             {!user && (
               <button
                 onClick={() => router.push("/sign-in")}
-                className="inline-flex items-center px-8 py-3 border border-teal-600 text-base font-medium rounded-lg text-teal-600 bg-white hover:bg-teal-50 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
+                className="inline-flex flex-col items-center px-8 py-3 border border-teal-600 text-base font-medium rounded-lg text-teal-600 bg-white hover:bg-teal-50 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg"
               >
-                Log In<br/>(लॉग इन करें)
+                <span><strong>Log In</strong></span>
+                <span className="mt-1">(लॉग इन करें)</span>
               </button>
             )}
-            
           </div>
         </div>
 

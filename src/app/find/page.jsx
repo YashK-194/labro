@@ -32,6 +32,28 @@ const Find = () => {
   
   const router = useRouter();
 
+  const getFeaturedServices = async () => {
+    try {
+      const services = await FeaturedServices();
+  
+      if (userLocation) {
+        const filteredServices = services.filter(service => {
+          if (service.location) {
+            const distance = calculateDistance(userLocation, service.location);
+            return distance <= 10; // Filter services within 10 km
+          }
+          return false;
+        });
+  
+        setFeaturedServices(filteredServices);
+      } else {
+        setFeaturedServices(services); // Fallback if user location is unavailable
+      }
+    } catch (error) {
+      console.error("Error fetching featured services:", error);
+    }
+  };
+  
   useEffect(() => {
     const fetchUserDetails = async () => {
       const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -40,17 +62,7 @@ const Find = () => {
       });
       return () => unsubscribe();
     };
-
-
-    const getFeaturedServices = async () => {
-      try {
-        const services = await FeaturedServices();
-        setFeaturedServices(services);
-      } catch (error) {
-        console.error("Error fetching featured services:", error);
-      }
-    };
-
+  
     const fetchUserLocation = async () => {
       auth.onAuthStateChanged(async (user) => {
         if (user) {
@@ -59,21 +71,28 @@ const Find = () => {
           if (docSnap.exists()) {
             const userData = docSnap.data();
             if (userData.location) {
-              setUserLocation(userData.location); // Assume location is { latitude, longitude }
+              setUserLocation(userData.location); 
             }
           }
         } else {
           console.log("User is not logged in");
         }
       });
-
     };
-
+  
     fetchUserLocation();
-    getFeaturedServices();
     fetchUserDetails();
-
   }, []);
+  
+  useEffect(() => {
+    if (userLocation) {
+      getFeaturedServices();
+    }
+  }, [userLocation]);
+  
+
+
+
 
   const handleServiceClick = (service) => setSelectedService(service);
   const handleCloseDetails = () => setSelectedService(null);
@@ -224,8 +243,8 @@ const Find = () => {
         />
       )}
 
-            {/* Footer */}
-            <footer className="bg-white mt-20">
+      {/* Footer */}
+      <footer className="bg-white mt-20">
         <div className="max-w-7xl mx-auto py-28 px-4 sm:px-6 lg:px-8">
          <p className="text-center text-gray-500 text-sm">
             © 2025 Labro. All rights reserved. <br />

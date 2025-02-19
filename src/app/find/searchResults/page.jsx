@@ -10,8 +10,6 @@ import { doc, getDoc } from "firebase/firestore";
 import calculateDistance from "../../components/calculate-distance";
 import dynamic from 'next/dynamic';
 
-// const searchServices = dynamic(() => import("../../components/search-services"), { suspense: true });
-
 const SearchResults = () => {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("query").trim() || "";
@@ -22,7 +20,6 @@ const SearchResults = () => {
 
   const router = useRouter();
   
-
   const handleServiceClick = (service) => setSelectedService(service);
   const handleCloseDetails = () => setSelectedService(null);
 
@@ -54,13 +51,23 @@ const SearchResults = () => {
 
   // Fetch search results
   useEffect(() => {
-
     const fetchResults = async () => {
-      if (!searchTerm) return;
+      if (!searchTerm || !userLocation) return;
       setLoading(true);
       try {
         const services = await searchServices(searchTerm);
-        setResults(services);
+        // Filter services within 10 km
+        const filteredServices = services.filter(service => {
+          if (!service.location) return false;
+          try {
+            const distance = calculateDistance(userLocation, service.location);
+            return distance <= 10; // Only include services within 10km
+          } catch (error) {
+            console.error("Error calculating distance:", error);
+            return false;
+          }
+        });
+        setResults(filteredServices);
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
@@ -68,8 +75,7 @@ const SearchResults = () => {
     };
 
     fetchResults();
-
-  }, [searchTerm]);
+  }, [searchTerm, userLocation]);
 
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-6">
@@ -90,9 +96,12 @@ const SearchResults = () => {
           <div className="grid grid-cols-1 gap-4">
           {results.map((service) => {
             const uniqueKey = `${service.title}-${service.providerName}-${service.price.min}-${service.price.max}`;
-            const distance = userLocation && service.location 
-              ? calculateDistance(userLocation, service.location) 
-              : null;
+            let distance = null;
+            try {
+              distance = calculateDistance(userLocation, service.location);
+            } catch (error) {
+              console.error("Error calculating distance for service:", service, error);
+            }
             return (
               <div key={uniqueKey} className="relative p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors shadow-sm" onClick={(e) => {
                 e.stopPropagation();
@@ -109,13 +118,15 @@ const SearchResults = () => {
                       <p className="text-sm text-gray-500">Phone: {service.providerPhone}</p>
                       <p className="text-sm text-gray-500">Email: {service.providerEmail}</p>
                     </div>
-                    {distance !== null && (
-                      <div className="text-right">
+                    <div className="text-right">
+                      {distance !== null ? (
                         <span className="text-md font-bold text-blue-700">
                           {distance.toFixed(2)} km
                         </span>
-                      </div>
-                    )}
+                      ) : (
+                        <span className="text-sm text-gray-500"><i>Distance unavailable</i></span>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 flex justify-between items-center">
@@ -152,5 +163,3 @@ const Page = () => {
 }
 
 export default Page
-
-
