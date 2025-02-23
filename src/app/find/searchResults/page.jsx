@@ -90,7 +90,7 @@ const SearchResults = () => {
           <p>Loading...</p>
         ) : results.length === 0 ? (
           <div className="flex items-center justify-center h-screen">
-            <p className="text-center text-xl text-gray-500">No services found.<br/>(कोई सेवा उपलब्ध नहीं है।)</p>
+            <p className="text-center text-xl text-gray-500">No services found near you.<br/>(आपके पास कोई सेवा उपलब्ध नहीं है।)</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">

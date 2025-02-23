@@ -186,7 +186,7 @@ const Find = () => {
     <section className="mb-8">
       <h2 className="text-lg font-semibold mb-4">Featured Services (प्रमुख सेवाएँ)</h2>
       {featuredServices.length === 0 ? (
-        <p className="text-gray-500 text-center text-lg">No services found.<br/>(कोई सेवा उपलब्ध नहीं है।)</p>
+        <p className="text-gray-500 text-center text-lg">No services found near you.<br/>(आपके पास कोई सेवा उपलब्ध नहीं है।)</p>
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {featuredServices.map((service) => {
@@ -249,10 +249,6 @@ const Find = () => {
          <p className="text-center text-gray-500 text-sm">
             © 2025 Labro. All rights reserved. <br />
             Developed and maintained by Yash Kumar. <br />
-            Email: <a href="mailto:yashkm194@gmail.com" className="text-blue-500 hover:underline">yashkm194@gmail.com</a> <br />
-            LinkedIn: <a href="https://www.linkedin.com/in/yashk194/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                          linkedin.com/in/yashk194
-                      </a>
           </p>
         </div>
       </footer>

@@ -6,12 +6,15 @@ import withAuth from "../firebase/withAuth";
 import { doc, getDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
 import Image from "next/image";
 import PfpPlaceholder from "../../icons/Pfp_placeholder.png";
+import yashKumarImg from "../../icons/Yash_kumar.jpg";
+import akanshKumarImg from "../../icons/Akansh_kumar.jpg"; 
 import labroLogo from "../../icons/Labro_logo.png";
 
 const Profile = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -111,6 +114,11 @@ const Profile = () => {
             className="w-full py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             Delete Profile
           </button>
+          <button 
+            onClick={() => setShowAboutModal(true)} 
+            className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+            About Us
+          </button>
         </div>
       </div>
 
@@ -166,11 +174,49 @@ const Profile = () => {
                 {loading ? "Deleting..." : "Confirm"}
               </button>
             </div>
+
+
           </div>
         </div>
       )}
 
-      {/* Add this right before the footer */}
+      {/* About Us Modal */}
+      {showAboutModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-lg font-semibold text-gray-800">About Us</h2>
+            <p className="text-sm text-gray-600 mt-2">We are brothers from Ghaziabad, Uttar Pradesh, independently building everything ourselves. If you'd like to reach out, follow the links below.</p>
+            <div className="flex flex-col space-y-4 mt-4">
+              {/* Person 1 */}
+              <div className="flex items-center space-x-4">
+                <Image src={yashKumarImg} alt="Yash Kumar" width={150} height={150} className="rounded-full border border-gray-300" />
+                <div>
+                  <h3 className="text-xl font-bold text-teal-700 italic">Yash Kumar</h3>
+                  <p className="text-lg text-gray-600 mt-1">LinkedIn: <br/><a href="https://www.linkedin.com/in/yashk194/" className="text-sm text-blue-500 hover:underline">linkedin.com/in/yashk194/</a></p>
+                </div>
+              </div>
+              {/* Person 2 */}
+              <div className="flex items-center space-x-4">
+                <Image src={akanshKumarImg} alt="Akansh Kumar" width={150} height={150} className="rounded-full border border-gray-300" />
+                <div>
+                  <h3 className="text-xl font-bold text-teal-700 italic">Akansh Kumar</h3>
+                  <p className="text-lg text-gray-600 mt-1">LinkedIn: <br/><a href="https://www.linkedin.com/in/akanshkumar/" className="text-sm text-blue-500 hover:underline">linkedin.com/in/akanshkumar/</a></p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end mt-4">
+              <button 
+                onClick={() => setShowAboutModal(false)} 
+                className="w-full py-3 bg-teal-700 text-white rounded-md hover:bg-teal-800">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* Socials */}
       <div className="mt-8 mb-6 text-center">
         <h3 className="text-gray-700 font-semibold mb-4">Find Us On Socials</h3>
         <div className="flex justify-center space-x-6">
@@ -253,14 +299,6 @@ const Profile = () => {
       <footer className="mt-10 text-center text-gray-500 text-sm">
         <p>© 2025 Labro. All rights reserved.</p>
         <p>Developed and maintained by Yash Kumar.</p>
-        <p>
-          Email: <a href="mailto:yashkm194@gmail.com" className="text-teal-500 hover:underline">yashkm194@gmail.com</a>
-        </p>
-        <p>
-          LinkedIn: <a href="https://www.linkedin.com/in/yashk194/" target="_blank" rel="noopener noreferrer" className="text-teal-500 hover:underline">
-            linkedin.com/in/yashk194
-          </a>
-        </p>
       </footer>
     </div>
   );

@@ -139,10 +139,6 @@ function Home() {
          <p className="text-center text-gray-500 text-sm">
             © 2025 Labro. All rights reserved. <br />
             Developed and maintained by Yash Kumar. <br />
-            Email: <a href="mailto:yashkm194@gmail.com" className="text-blue-500 hover:underline">yashkm194@gmail.com</a> <br />
-            LinkedIn: <a href="https://www.linkedin.com/in/yashk194/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                          linkedin.com/in/yashk194
-                      </a>
           </p>
         </div>
       </footer>
