@@ -107,34 +107,38 @@ const ServiceDetails = ({ userId, service, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] max-h-[90vh] flex flex-col">
 
-        {/* Profile Section */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center">
-          <Image
-              src={PfpPlaceholder}
-              alt="Profile"
-              className="rounded-full"
-              width={80}
-              height={80}
-            />,
-            <div>
-              <h3 className="text-lg font-semibold">{lister?.name}</h3>
-              {lister?.phone && (
-                <p className="text-teal-600 text-md font-bold mt-1">
-                  <a href={`tel:+91${lister.phone}`} className="hover:underline">
-                    +91 {lister.phone}
-                  </a>
-                </p>
-              )}
-            </div>
-          </div>
-          {/* Display distance with better visibility */}
-          {distance !== null && (
-            <p className="text-md font-bold text-blue-700 mt-2">
-              {distance.toFixed(2)} km away
-            </p>
-          )}
-        </div>
+
+{/* Profile Section */}
+<div className="flex items-center justify-between mb-4">
+  <div className="flex items-center">
+    <div className="w-20 h-20 flex-shrink-0">
+      <Image
+        src={PfpPlaceholder}
+        alt="Profile"
+        className="rounded-full w-full h-full object-cover"
+        width={80}
+        height={80}
+        priority
+      />
+    </div>
+    <div className="ml-3">
+      <h3 className="text-lg font-semibold">{lister?.name}</h3>
+      {lister?.phone && (
+        <p className="text-teal-600 text-md font-bold mt-1">
+          <a href={`tel:+91${lister.phone}`} className="hover:underline">
+            +91 {lister.phone}
+          </a>
+        </p>
+      )}
+    </div>
+  </div>
+  {/* Display distance with better visibility */}
+  {distance !== null && (
+    <p className="text-md font-bold text-blue-700 mt-2">
+      {distance.toFixed(2)} km away
+    </p>
+  )}
+</div>
 
         {/* Service Details */}
         <div className="flex-1 overflow-y-auto">

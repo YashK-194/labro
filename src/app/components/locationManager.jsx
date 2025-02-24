@@ -219,6 +219,7 @@ const LocationManager = ({ userId, onLocationUpdate }) => {
               width: "400px",
             }}
           >
+            <p className="text-center text-xl font-semibold mb-2">Update your location</p>
             <p className="text-gray-500 text-center text-lg">
               Click "Detect Location" first. If it fails, enter manually.
             </p>

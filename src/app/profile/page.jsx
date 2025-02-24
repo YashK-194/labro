@@ -98,7 +98,7 @@ const Profile = () => {
           <div className="text-center mt-4">
             <h2 className="text-2xl font-bold text-gray-800">{userDetails?.name || "User"}</h2>
             <p className="text-gray-600">{userDetails?.email}</p>
-            <p className="text-gray-600">{userDetails?.phone}</p>
+            <p className="text-gray-600">+91 {userDetails?.phone}</p>
           </div>
         </div>
 
@@ -185,7 +185,7 @@ const Profile = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-lg font-semibold text-gray-800">About Us</h2>
-            <p className="text-sm text-gray-600 mt-2">We are brothers from Ghaziabad, Uttar Pradesh, independently building everything ourselves. If you'd like to reach out, follow the links below.</p>
+            <p className="text-sm text-gray-600 mt-2">We are trying to solving a problem. A lot of daily wage workers dont get work when they need it, and on the other end of the spectrum a lot of people dont find these workers when they need them. We are on a mission to offer them a platform to connect with each other without a middleman, at the fair price.</p>
             <div className="flex flex-col space-y-4 mt-4">
               {/* Person 1 */}
               <div className="flex items-center space-x-4">
