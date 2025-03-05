@@ -4,7 +4,7 @@ import { auth, db } from "../firebase/config";
 import calculateDistance from "../components/calculate-distance";
 import Image from 'next/image';
 import PfpPlaceholder from '../../icons/Pfp_placeholder.png'; 
-
+import trackPhoneNumberClick from './trackPhoneNumberClick';
 
 const ServiceDetails = ({ userId, service, onClose }) => {
   const [lister, setLister] = useState(null);
@@ -58,6 +58,12 @@ const ServiceDetails = ({ userId, service, onClose }) => {
     fetchListerDetails();
   }, [userId]);
 
+  // Handler for phone number click
+  const handlePhoneNumberClick = (phoneNumber) => {
+    // Remove any non-digit characters and the country code
+    const cleanedNumber = phoneNumber.replace(/\D/g, '').replace(/^91/, '');
+    trackPhoneNumberClick(cleanedNumber);
+  };
   
 
   // Helper function to format location
@@ -125,7 +131,7 @@ const ServiceDetails = ({ userId, service, onClose }) => {
       <h3 className="text-lg font-semibold">{lister?.name}</h3>
       {lister?.phone && (
         <p className="text-teal-600 text-md font-bold mt-1">
-          <a href={`tel:+91${lister.phone}`} className="hover:underline">
+          <a href={`tel:+91${lister.phone}`} className="hover:underline" onClick={() => handlePhoneNumberClick(lister.phone)}>
             +91 {lister.phone}
           </a>
         </p>
