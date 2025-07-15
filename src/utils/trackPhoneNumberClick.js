@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { db } from "../lib/firebase/config";
 
 // Function to track phone number clicks
 const trackPhoneNumberClick = async (phoneNumber) => {
@@ -14,13 +14,13 @@ const trackPhoneNumberClick = async (phoneNumber) => {
       // If document exists, update with new phone number and increment total clicks
       await updateDoc(phoneClickDocRef, {
         totalClicks: (phoneClickDoc.data().totalClicks || 0) + 1,
-        clickedNumbers: arrayUnion(phoneNumber)
+        clickedNumbers: arrayUnion(phoneNumber),
       });
     } else {
       // If document doesn't exist, create a new one with initial data
       await setDoc(phoneClickDocRef, {
         totalClicks: 1,
-        clickedNumbers: [phoneNumber]
+        clickedNumbers: [phoneNumber],
       });
     }
   } catch (error) {

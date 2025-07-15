@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import BottomNav from "./botton-nav";
+import BottomNav from "./BottomNav";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();

@@ -1,5 +1,5 @@
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { db } from "../../lib/firebase/config";
 
 const searchServices = async (searchTerm, onServiceSelect) => {
   try {
@@ -16,8 +16,13 @@ const searchServices = async (searchTerm, onServiceSelect) => {
         const userId = service.userId;
 
         if (service.title.toLowerCase().includes(search)) {
-          let providerDetails = { name: "Unknown", phone: "N/A", email: "N/A", location: null };
-          
+          let providerDetails = {
+            name: "Unknown",
+            phone: "N/A",
+            email: "N/A",
+            location: null,
+          };
+
           if (userId) {
             const userRef = doc(db, "Users", userId);
             const userSnap = await getDoc(userRef);
