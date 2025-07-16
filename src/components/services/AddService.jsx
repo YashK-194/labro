@@ -106,7 +106,8 @@ const AddService = ({ userId, onClose, onAdd }) => {
 
   return (
     <>
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-2xl z-50 w-[90vw] max-w-[400px] border border-white/20 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-3 sm:p-4 pb-20" onClick={onClose}>
+        <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-sm sm:max-w-lg border border-white/20 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="text-center mb-4 sm:mb-6">
           <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-teal-600 rounded-full flex items-center justify-center">
@@ -264,12 +265,8 @@ const AddService = ({ userId, onClose, onAdd }) => {
             </button>
           </div>
         </form>
+        </div>
       </div>
-
-      <div
-        onClick={onClose}
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-      />
     </>
   );
 };

@@ -129,7 +129,7 @@ const ServiceDetails = ({ userId, service, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-3 sm:p-4 pb-20">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-sm sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-sm sm:max-w-lg max-h-[80vh] flex flex-col overflow-hidden">
         {/* Header with close button */}
         <div className="relative bg-teal-600 text-white p-4 sm:p-6">
           <button
