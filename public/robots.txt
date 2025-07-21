@@ -1,0 +1,20 @@
+# Robots.txt for Labro
+User-agent: *
+Allow: /
+
+# Important pages
+Allow: /find
+Allow: /sign-up
+Allow: /sign-in
+
+# Disallow admin/internal pages
+Disallow: /api/
+Disallow: /_next/
+Disallow: /profile
+Disallow: /list
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://labro.app/sitemap.xml
