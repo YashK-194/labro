@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRouter } from 'next/navigation';
-import { auth } from './config';
-import { useEffect } from 'react';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useRouter } from "next/navigation";
+import { auth } from "./config";
+import { useEffect } from "react";
 
 const withAuth = (WrappedComponent) => {
   return function AuthenticatedComponent(props) {
@@ -12,7 +12,7 @@ const withAuth = (WrappedComponent) => {
 
     useEffect(() => {
       if (!loading && !user) {
-        router.push('/sign-up'); // Redirect to the sign-up page if not authenticated
+        router.push("/sign-up"); // Redirect to the sign-up page if not authenticated
       }
     }, [user, loading, router]);
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { db } from "../firebase/config";
+import { db } from "../../lib/firebase/config";
 import { useRouter } from "next/navigation";
 
 const LocationManager = ({ userId, onLocationUpdate }) => {

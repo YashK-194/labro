@@ -21,7 +21,11 @@ const AnimatedHeadline = () => {
         <div
           key={index}
           className={`absolute w-full text-center transition-all duration-700 ease-in-out 
-            ${index === currentIndex ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}
+            ${
+              index === currentIndex
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }
           `}
         >
           {headline}
